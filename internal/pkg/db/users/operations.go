@@ -2,6 +2,7 @@ package users
 
 import (
 	"database/sql"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"uasbreezy/config/views"
 )
@@ -17,7 +18,7 @@ func GetAll(d *sql.DB) ([]views.User, error) {
 
 	for rows.Next() {
 		var us views.User
-		err := rows.Scan(&us.Id, &us.Login, &us.Email, &us.Password, &us.About)
+		err := rows.Scan(&us.Id, &us.Login, &us.Email, &us.About, &us.Password)
 		if err != nil {
 			log.Println(err)
 			continue
@@ -30,11 +31,16 @@ func GetAll(d *sql.DB) ([]views.User, error) {
 
 func Create(d *sql.DB, u views.User) error {
 	query := `
-				INSERT INTO users (id, login, email, password, about)
+				INSERT INTO users (id, login, email, about, password)
 				VALUES ($1, $2, $3, $4, $5)
 			`
 
-	_, err := d.Exec(query, u.Id, u.Login, u.Email, u.Password, u.About)
+	hashedpass, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	_, err = d.Exec(query, u.Id, u.Login, u.Email, u.About, hashedpass)
 	if err != nil {
 		return err
 	}
@@ -45,11 +51,16 @@ func Create(d *sql.DB, u views.User) error {
 func Update(d *sql.DB, u views.UserNoId, id string) error {
 	query := `
 				UPDATE users
-				SET login = $1, email = $2, password = $3, about = $4
+				SET login = $1, email = $2, about = $3, password = $4
 				WHERE id = $5
 			`
 
-	_, err := d.Exec(query, u.Login, u.Email, u.Password, u.About, id)
+	hashedpass, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	_, err = d.Exec(query, u.Login, u.Email, u.About, hashedpass, id)
 	if err != nil {
 		return err
 	}
