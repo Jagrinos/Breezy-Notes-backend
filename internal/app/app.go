@@ -2,45 +2,25 @@ package app
 
 import (
 	"context"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	"uasbreezy/config"
 	"uasbreezy/internal/pkg/net"
 )
 
 func Run() error {
+	err := config.SetupKeys()
+	if err != nil {
+		return err
+	}
 	driver, err := net.Connect()
 	if err != nil {
 		return err
 	}
-
-	//usersss, err := users.GetAll(driver.Driver)
-	//log.Print(usersss)
-
-	//err = users.Create(driver, views.User{
-	//	Id:       uuid.NewString(),
-	//	Login:    "1",
-	//	Email:    "1",
-	//	Password: "1",
-	//	About:    "1",
-	//})
-	//usersss, err := users.GetAll(driver)
-	//log.Print(usersss)
-	//
-	//if err != nil {
-	//	return err
-	//}
-	//usersls, err := GetAll(driver)
-	//if err != nil {
-	//	if err = net.Disconnect(driver); err != nil {
-	//		return err
-	//	}
-	//	return err
-	//}
-	//
-	//log.Print(usersls)
 
 	e := net.GetEcho(driver)
 

@@ -1,1 +1,3 @@
 config/config.go
+config/private.pem
+config/public.pem

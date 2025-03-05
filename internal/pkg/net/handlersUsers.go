@@ -11,7 +11,7 @@ import (
 func (db DriverDb) GetAllUserHandler(c echo.Context) error {
 	usersls, err := users.GetAll(db.Driver)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError,
+		return c.JSON(http.StatusBadGateway,
 			map[string]string{
 				"error": err.Error(),
 			})
@@ -41,7 +41,7 @@ func (db DriverDb) CreateUserHandler(c echo.Context) error {
 		About:    newUser.About,
 	})
 	if err != nil {
-		return c.JSON(http.StatusBadRequest,
+		return c.JSON(http.StatusBadGateway,
 			map[string]string{
 				"error": err.Error(),
 			})
@@ -71,7 +71,7 @@ func (db DriverDb) UpdateUserHandler(c echo.Context) error {
 	}
 
 	if err := users.Update(db.Driver, ud, id); err != nil {
-		return c.JSON(http.StatusBadRequest,
+		return c.JSON(http.StatusBadGateway,
 			map[string]string{
 				"error": err.Error(),
 			})
@@ -93,7 +93,7 @@ func (db DriverDb) DeleteUserHandler(c echo.Context) error {
 	}
 
 	if err := users.Delete(db.Driver, id); err != nil {
-		return c.JSON(http.StatusBadRequest,
+		return c.JSON(http.StatusBadGateway,
 			map[string]string{
 				"error": err.Error(),
 			})
