@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"errors"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"log"
 	"net/http"
@@ -25,8 +26,8 @@ func Run() error {
 	e := net.GetEcho(driver)
 
 	go func() {
-		if err = e.Echo.Start(":8008"); err != nil && err != http.ErrServerClosed {
-			log.Print(err)
+		if err = e.Echo.Start(":8008"); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatal(err)
 		}
 	}()
 	quit := make(chan os.Signal)
