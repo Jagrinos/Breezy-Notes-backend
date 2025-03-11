@@ -1,5 +1,7 @@
 package views
 
+import "database/sql"
+
 type User struct {
 	Id       string `json:"id"`
 	Login    string `json:"login"`
@@ -24,4 +26,10 @@ type UserInfo struct {
 	Login string `json:"login"`
 	Email string `json:"email"`
 	About string `json:"about"`
+}
+
+type SqlDb interface {
+	Query(query string, args ...any) (*sql.Rows, error)
+	Exec(query string, args ...any) (sql.Result, error)
+	QueryRow(query string, args ...any) *sql.Row
 }

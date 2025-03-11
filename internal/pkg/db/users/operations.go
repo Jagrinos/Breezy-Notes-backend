@@ -1,15 +1,13 @@
 package users
 
 import (
-	"database/sql"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"uasbreezy/config/views"
 )
 
-func GetAll(d *sql.DB) ([]views.User, error) {
+func GetAll(d views.SqlDb) ([]views.User, error) {
 	var userls []views.User
-
 	rows, err := d.Query(`SELECT * FROM users`)
 	if err != nil {
 		return nil, err
@@ -29,7 +27,7 @@ func GetAll(d *sql.DB) ([]views.User, error) {
 	return userls, nil
 }
 
-func Create(d *sql.DB, u views.User) error {
+func Create(d views.SqlDb, u views.User) error {
 	query := `
 				INSERT INTO users (id, login, email, about, password)
 				VALUES ($1, $2, $3, $4, $5)
@@ -48,7 +46,7 @@ func Create(d *sql.DB, u views.User) error {
 	return nil
 }
 
-func Update(d *sql.DB, u views.UserNoId, id string) error {
+func Update(d views.SqlDb, u views.UserNoId, id string) error {
 	query := `
 				UPDATE users
 				SET login = $1, email = $2, about = $3, password = $4
@@ -67,7 +65,7 @@ func Update(d *sql.DB, u views.UserNoId, id string) error {
 	return nil
 }
 
-func Delete(d *sql.DB, id string) error {
+func Delete(d views.SqlDb, id string) error {
 	query := `
 				DELETE FROM users
 				WHERE id = $1

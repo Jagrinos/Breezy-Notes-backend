@@ -7,7 +7,7 @@ import (
 	"uasbreezy/config/views"
 )
 
-func Auth(db *sql.DB, u views.UserAuth) error {
+func Auth(db views.SqlDb, u views.UserAuth) error {
 	query := `
 		SELECT login,password FROM users
 		WHERE login = $1
@@ -30,7 +30,7 @@ func Auth(db *sql.DB, u views.UserAuth) error {
 	return nil
 }
 
-func GetInfo(db *sql.DB, login string) (views.UserInfo, error) {
+func GetInfo(db views.SqlDb, login string) (views.UserInfo, error) {
 	query := `
 		SELECT login,email,about FROM users
 		WHERE login = $1

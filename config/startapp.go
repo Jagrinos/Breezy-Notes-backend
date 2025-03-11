@@ -6,6 +6,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 func SetupKeys() (err error) {
@@ -21,7 +22,7 @@ func SetupKeys() (err error) {
 }
 
 func loadPrivateKeyFromFile() (*ecdsa.PrivateKey, error) {
-	data, err := os.ReadFile("config/private.pem")
+	data, err := os.ReadFile(filepath.Join(".", "config", "private.pem"))
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +41,7 @@ func loadPrivateKeyFromFile() (*ecdsa.PrivateKey, error) {
 }
 
 func loadPublicKeyFromFile() (*ecdsa.PublicKey, error) {
-	data, err := os.ReadFile("config/public.pem")
+	data, err := os.ReadFile(filepath.Join(".", "config", "public.pem"))
 	if err != nil {
 		return nil, err
 	}

@@ -21,7 +21,7 @@ func (db DriverDb) AuthenticationHandler(c echo.Context) error {
 
 	err := users.Auth(db.Driver, u)
 	if err != nil {
-		return c.JSON(http.StatusBadGateway,
+		return c.JSON(http.StatusBadGateway, //TODO StatusUnauthorized
 			map[string]string{
 				"error": err.Error(),
 			})
@@ -108,7 +108,7 @@ func (db DriverDb) CheckTokenHandler(c echo.Context) error {
 	}
 	_, err := jwt.VerifyToken(at)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError,
+		return c.JSON(http.StatusInternalServerError, //TODO TOKEN IS EXPIRED ERROR
 			map[string]string{
 				"error": err.Error(),
 			})

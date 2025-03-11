@@ -30,6 +30,7 @@ func Run() error {
 			log.Fatal(err)
 		}
 	}()
+	//wait for terminate
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 	<-quit
