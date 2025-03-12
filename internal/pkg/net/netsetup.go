@@ -2,11 +2,12 @@ package net
 
 import (
 	"errors"
+	"net/http"
+	"time"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"golang.org/x/time/rate"
-	"net/http"
-	"time"
 )
 
 type Echo struct {
@@ -55,6 +56,13 @@ func GetEcho(db DriverDb) Echo {
 	e := echo.New()
 	e.Use(middleware.Logger(), middleware.Recover())
 	e.Use(setupLimiter())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete, http.MethodOptions},
+		AllowHeaders:     []string{"*"},
+		AllowCredentials: true,
+	}))
+
 	//user
 	e.GET("/api/users/getall", db.GetAllUserHandler)
 	e.POST("/api/users/create", db.CreateUserHandler)
