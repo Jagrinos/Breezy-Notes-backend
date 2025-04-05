@@ -1,9 +1,10 @@
 package app
 
 import (
-	"BreeZy_Backend_vol_0/internal/db"
 	"BreeZy_Backend_vol_0/internal/net"
+	"BreeZy_Backend_vol_0/internal/net/mongonet"
 	"context"
+	"errors"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,8 +14,8 @@ import (
 
 func Run() error {
 	//start mongo + echo
-	client, err := db.Connect()
-	if err != nil {
+	var c mongonet.Client
+	if err := c.Connect(); err != nil {
 		return err
 	}
 
@@ -22,8 +23,9 @@ func Run() error {
 	if err != nil {
 		return err
 	}
+
 	go func() {
-		if err = e.Start(":8008"); err != nil && err != http.ErrServerClosed {
+		if err = e.Start(":8008"); err != nil && !errors.Is(http.ErrServerClosed, err) {
 			e.Logger.Fatal(err)
 		}
 	}()
@@ -40,60 +42,9 @@ func Run() error {
 	if err = e.Shutdown(ctx); err != nil {
 		return err
 	}
-	if err = db.Disconnect(client); err != nil {
+	if err = c.Disconnect(); err != nil {
 		return err
 	}
 
 	return nil
 }
-
-//func getAll(client *mongo.Client) {
-//	users, err := users.GetAll(client)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//
-//	if len(users) == 0 {
-//		log.Println("no one")
-//	}
-//
-//	for _, val := range users {
-//		log.Printf("%s %s %s", val.Id, val.Login, val.Password)
-//	}
-//}
-//var client *mongo.Client
-//
-//err := db.Connect(&client)
-//if err != nil {
-//return err
-//}
-//
-//getAll(client)
-//
-//newuserid := uuid.NewString()
-//newuser := Views.User{
-//Id:       newuserid,
-//Login:    "genadii_rabota",
-//Password: "mypassword12",
-//}
-//users.Create(client, newuser)
-//
-//getAll(client)
-//
-//newuserChange := Views.UserWithoutId{
-//Login:    "genadii",
-//Password: "PIDORAS)",
-//}
-//
-//users.Update(client, newuserid, newuserChange)
-//
-//getAll(client)
-//
-//users.Delete(client, newuserid)
-//
-//getAll(client)
-//
-//err = db.Disconnect(&client)
-//if err != nil {
-//return err
-//}
