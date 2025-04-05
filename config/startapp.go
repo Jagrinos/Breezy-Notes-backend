@@ -10,15 +10,32 @@ import (
 )
 
 func SetupKeys() (err error) {
+	CONNSTR, err = setupConnstr()
+	if err != nil {
+		return err
+	}
+
 	PRIVATEKEY, err = loadPrivateKeyFromFile()
 	if err != nil {
 		return err
 	}
+
 	PUBLICKEY, err = loadPublicKeyFromFile()
 	if err != nil {
 		return err
 	}
+
 	return nil
+}
+
+func setupConnstr() (string, error) {
+	return fmt.Sprintf(
+			"postgres://%s:%s@uasbreezydb:5432/%s?sslmode=disable",
+			os.Getenv("POSTGRES_USER"),
+			os.Getenv("POSTGRES_PASSWORD"),
+			os.Getenv("POSTGRES_DB"),
+		),
+		nil
 }
 
 func loadPrivateKeyFromFile() (*ecdsa.PrivateKey, error) {
